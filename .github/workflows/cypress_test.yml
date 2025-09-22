@@ -1,4 +1,5 @@
-name: Cypress Tests
+name: Cypress E2E Tests
+
 on:
   push:
     branches:
@@ -13,15 +14,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Dependencies
+
+      - name: Install dependencies
         run: npm ci
+
       - name: Run Cypress tests
-        run: npm run test:ci
-      - name: Merge Reports
+        run: npx cypress run --reporter mochawesome --reporter-options 'reportDir=cypress/results,overwrite=false,html=false,json=true'
+      
+      - name: Generate Mochawesome HTML report
         run: |
-          npm run combine-reports
-          npm run generate-report
+          npx mochawesome-merge cypress/results/*.json > mochawesome-report/mochawesome-merged.json
+          npx mochawesome-report-generator mochawesome-report/mochawesome-merged.json -o mochawesome-report
         if: always()
+
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v4
