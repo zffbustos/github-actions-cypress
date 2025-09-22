@@ -17,9 +17,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run Cypress tests
-        run: npx cypress run --reporter mochawesome --reporter-options 'reportDir=cypress/results,overwrite=false,html=false,json=true'
-        env:
-          NODE_OPTIONS: --import=tsx
+        run: npx --node-options="--require=tsx" cypress run --reporter mochawesome --reporter-options 'reportDir=cypress/results,overwrite=false,html=false,json=true'
       - name: Merge test results
         run: npx mochawesome-merge "cypress/results/*.json" > cypress/results/output.json
       - name: Generate HTML report
