@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:ci": "npx cypress run --reporter mochawesome",
+    "combine-reports": "npx mochawesome-merge 'cypress/results/*.json' > cypress/results/output.json",
+    "generate-report": "npx mochawesome-report-generator cypress/results/output.json -o mochawesome-report"
   },
   "keywords": [],
   "author": "",
