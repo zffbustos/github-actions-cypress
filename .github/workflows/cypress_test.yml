@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   cypress-run:
@@ -10,20 +13,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Node v4
-        uses: actions/setup-node@v4
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
         with:
-          node-version: '16'
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Cypress tests
-        run: npx --node-options="--require=tsx" cypress run --reporter mochawesome --reporter-options 'reportDir=cypress/results,overwrite=false,html=false,json=true'
-      - name: Merge test results
-        run: npx mochawesome-merge "cypress/results/*.json" > cypress/results/output.json
-      - name: Generate HTML report
-        run: npx mochawesome-report-generator cypress/results/output.json
-      - name: Upload HTML report
-        uses: actions/upload-artifact@v4
+          command: npx cypress run --reporter mochawesome --reporter-options 'reportDir=cypress/results,overwrite=false,html=false,json=true'
+      - name: Upload Test Results
+        if: always()
         with:
           name: mochawesome-report
           path: mochawesome-report
